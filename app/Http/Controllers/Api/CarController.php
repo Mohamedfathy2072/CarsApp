@@ -17,7 +17,7 @@ class CarController extends Controller
 
    public function index(Request $request)
 {
-    if ($request->hasAny(['brand', 'model', 'color', 'year', 'price_from', 'price_to', 'location'])) {
+    if ($request->hasAny(['brand', 'model', 'color', 'year', 'price_from', 'price_to', 'location','sort_by','sort_order'])) {
         return response()->json($this->carService->search($request));
     }
 
@@ -28,7 +28,7 @@ class CarController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'brand' => 'required|string',
+            'brand_id' => 'required',
             'model' => 'required|string',
             'year' => 'required|digits:4|integer',
             'color' => 'required|string',

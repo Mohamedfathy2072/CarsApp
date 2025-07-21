@@ -10,7 +10,7 @@ class Car extends Model
     use HasFactory;
 
     protected $fillable = [
-        'brand', 'model', 'year', 'color', 'transmission', 'engine_cc',
+        'brand_id', 'model', 'year', 'color', 'transmission', 'engine_cc',
         'body_type', 'km_driven', 'price', 'down_payment', 'license_validity', 'location'
     ];
 
@@ -18,5 +18,14 @@ class Car extends Model
     {
         return $this->hasMany(CarImage::class);
     }
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
+    }
+    public function favouritedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'car_user_favourites')->withTimestamps();
+    }
+
 }
 

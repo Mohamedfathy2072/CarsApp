@@ -27,7 +27,7 @@ class CarService
     public function createCar(Request $request)
     {
         $data = $request->only([
-            'brand', 'model', 'year', 'color', 'transmission', 'engine_cc',
+            'brand_id', 'model', 'year', 'color', 'transmission', 'engine_cc',
             'body_type', 'km_driven', 'price', 'down_payment', 'license_validity', 'location'
         ]);
 
@@ -37,7 +37,7 @@ class CarService
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $path = $image->store('car_images', 'public');
-                
+
                 $car->images()->create([
                     'image_path' => $path,
                     'is_360' => false
@@ -45,19 +45,41 @@ class CarService
             }
         }
 
-        return $car->load('images');
+         return $car->load(['images', 'brand']);
     }
 
     public function updateCar($id, Request $request)
     {
         $data = $request->only([
-            'brand', 'model', 'year', 'color', 'transmission', 'engine_cc',
+            'brand_id', 'model', 'year', 'color', 'transmission', 'engine_cc',
             'body_type', 'km_driven', 'price', 'down_payment', 'license_validity', 'location'
         ]);
 
+        // لو فيه صور جديدة اترفعت في التحديث
+        if ($request->hasFile('images')) {
+            $car = $this->repo->find($id);
+
+            // امسح الصور القديمة
+            foreach ($car->images as $image) {
+                Storage::disk('public')->delete($image->image_path);
+                $image->delete();
+            }
+
+            // ارفع الصور الجديدة
+            foreach ($request->file('images') as $imageFile) {
+                $path = $imageFile->store('car_images', 'public');
+                $car->images()->create([
+                    'image_path' => $path,
+                    'is_360' => false
+                ]);
+            }
+        }
+
         $car = $this->repo->update($id, $data);
-        return $car->fresh('images');
+
+        return $car->load(['images', 'brand']);
     }
+
 
     public function deleteCar($id)
     {
