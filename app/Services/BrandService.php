@@ -16,25 +16,35 @@ class BrandService
         $this->repository = $repository;
     }
 
-    public function all()
+    public function allPaginated($size)
     {
-    $brands = $this->repository->all();
+        $brands = $this->repository->allPaginated($size);
 
-    foreach ($brands as $brand) {
-        if ($brand->image_path) {
-            $brand->image_url = Storage::url($brand->image_path);
-            unset($brand->image_path);
-        } else {
-            $brand->image_url = null;
+        foreach ($brands as $brand) {
+            if ($brand->image_path) {
+                $brand->image_url = Storage::url($brand->image_path);
+                unset($brand->image_path);
+            } else {
+                $brand->image_url = null;
+            }
         }
-    }
 
-    return $brands;    }
+        return $brands;
+    }
 
     public function find($id)
     {
-        return $this->repository->find($id);
+        $brand = $this->repository->find($id);
+
+        $brand->image_url = $brand->image_path
+            ? Storage::url($brand->image_path)
+            : null;
+
+        unset($brand->image_path);
+
+        return $brand;
     }
+
 
     public function create(array $data)
 {

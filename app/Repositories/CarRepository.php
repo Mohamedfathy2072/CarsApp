@@ -10,35 +10,18 @@ class CarRepository implements CarRepositoryInterface
 {
     public function all()
     {
-        $cars = Car::with(['images', 'brand'])->get();
-
-        foreach ($cars as $car) {
-            foreach ($car->images as $image) {
-                $image->image_url = Storage::url($image->image_path);
-                unset($image->image_path);
-            }
-
-            if ($car->brand) {
-                $imagePath = $car->brand->image_path;
-
-                $car->brand->image_url = $imagePath
-                    ? Storage::url($imagePath)
-                    : null;
-
-                unset($car->brand->image_path);
-            }
-        }
-
-        return $cars;
+        return Car::with(['images', 'brand']);
     }
+
 
 
 
 
     public function find($id)
     {
-        return Car::with('images')->findOrFail($id);
+        return Car::with(['images', 'brand'])->findOrFail($id);
     }
+
 
     public function create(array $data)
     {
@@ -130,25 +113,11 @@ class CarRepository implements CarRepositoryInterface
             }
 
         }
-        // جلب البيانات مع الصور والبراند
-        $cars = $query->with(['images', 'brand'])->get();
 
-        // تجهيز الصور وروابطها
-        foreach ($cars as $car) {
-            foreach ($car->images as $image) {
-                $image->image_url = Storage::url($image->image_path);
-                unset($image->image_path);
-            }
-
-            if ($car->brand) {
-                $car->brand->image_url = $car->brand->image_path ? Storage::url($car->brand->image_path) : null;
-                unset($car->brand->image_path);
-            }
-        }
 
 
        //dd(in_array($column, $allowedColumns));
-        return $cars;
+        return $query->with(['images', 'brand']);
     }
 
 

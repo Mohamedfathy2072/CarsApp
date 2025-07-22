@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\SavedSearchInterface;
 use Illuminate\Http\Request;
 
-class SavedSearchController extends Controller
+class SavedSearchController extends BaseController
 {
     protected $repository;
 
@@ -31,16 +31,13 @@ class SavedSearchController extends Controller
 
     public function index(Request $request)
     {
-        $request->validate([
-            'limit' => 'nullable|integer|min:1'
-        ]);
+        $size = $request->input('size', 10);
 
-        $limit = $request->input('limit', 10);
+        $searches = $this->repository->getByUser(auth('api')->id(), $size);
 
-        $searches = $this->repository->getByUser(auth('api')->id(), $limit);
-
-        return response()->json($searches);
+        return $this->successResponse($searches, "Saved searches fetched successfully.");
     }
+
 
     public function destroy($id)
     {

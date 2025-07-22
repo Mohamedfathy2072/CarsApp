@@ -12,6 +12,11 @@ class BrandRepository implements BrandRepositoryInterface
     {
         return Brand::all();
     }
+    public function allPaginated($size)
+    {
+        return Brand::paginate($size);
+    }
+
 
     public function find($id)
     {

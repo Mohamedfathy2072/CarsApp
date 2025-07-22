@@ -6,16 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Models\ContactUs;
 use Illuminate\Http\Request;
 
-class ContactUsController extends Controller
+class ContactUsController extends BaseController
 {
     public function index()
     {
         $contact = ContactUs::first();
 
-        return response()->json([
-            'data' => $contact,
-        ]);
+        if (!$contact) {
+            return $this->singleItemResponse(null, "No contact data found.");
+        }
+
+        return $this->singleItemResponse($contact, "Contact info fetched successfully.");
     }
+
     public function store(Request $request)
     {
         $request->validate([

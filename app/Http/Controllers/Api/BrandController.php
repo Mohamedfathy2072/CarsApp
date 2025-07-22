@@ -1,12 +1,13 @@
 <?php
 
 namespace App\Http\Controllers\Api;
+use App\Models\Brand;
 use App\Services\BrandService;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class BrandController extends Controller
+class BrandController extends BaseController
 {
     protected $service;
 
@@ -15,9 +16,13 @@ class BrandController extends Controller
         $this->service = $service;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json($this->service->all());
+        $size = $request->input('size', 10);
+
+        $brands = $this->service->allPaginated($size);
+
+        return $this->successResponse($brands, "Brands fetched successfully.");
     }
 
     public function store(Request $request)
@@ -35,8 +40,10 @@ class BrandController extends Controller
 
     public function show($id)
     {
-        return response()->json($this->service->find($id));
+        $brand = $this->service->find($id);
+        return $this->singleItemResponse($brand, "Brand fetched successfully.");
     }
+
 
     public function update(Request $request, Brand $brand)
     {

@@ -5,8 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\CarService;
+use Illuminate\Support\Facades\Storage;
 
-class CarController extends Controller
+class CarController extends BaseController
 {
     protected $carService;
 
@@ -15,14 +16,25 @@ class CarController extends Controller
         $this->carService = $carService;
     }
 
-   public function index(Request $request)
-{
-    if ($request->hasAny(['brand', 'model', 'color', 'year', 'price_from', 'price_to', 'location','sort_by','sort_order'])) {
-        return response()->json($this->carService->search($request));
+    public function index(Request $request)
+    {
+        $size = $request->input('size', 10);
+
+        if ($request->hasAny(['brand', 'model', 'color', 'year', 'price_from', 'price_to', 'location', 'sort_by', 'sort_order'])) {
+            $query = $this->carService->search($request);
+        } else {
+            $query = $this->carService->getAllCars();
+        }
+
+        $cars = $query->paginate($size);
+
+        $this->carService->formatCars($cars);
+
+        return $this->successResponse($cars, "Cars fetched successfully.");
     }
 
-    return response()->json($this->carService->getAllCars());
-}
+
+
 
 
     public function store(Request $request)
@@ -48,8 +60,10 @@ class CarController extends Controller
 
     public function show($id)
     {
-        return $this->carService->getCarById($id);
+        $car = $this->carService->getCarById($id);
+        return $this->singleItemResponse($car, "Car fetched successfully.");
     }
+
 
     public function update(Request $request, $id)
     {

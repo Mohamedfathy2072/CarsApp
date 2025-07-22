@@ -11,13 +11,13 @@ class SavedSearchRepository implements SavedSearchInterface
         return SavedSearch::create($data);
     }
 
-    public function getByUser($userId, $limit)
+    public function getByUser($userId, $size)
     {
         return SavedSearch::where('user_id', $userId)
-                          ->latest()
-                          ->limit($limit)
-                          ->get();
+            ->orderBy('created_at', 'desc')
+            ->paginate($size);
     }
+
 
     public function delete($id)
     {

@@ -21,8 +21,10 @@ class CarService
 
     public function getCarById($id)
     {
-        return $this->repo->find($id);
+        $car = $this->repo->find($id);
+        return $this->formatCar($car);
     }
+
 
     public function createCar(Request $request)
     {
@@ -92,7 +94,33 @@ class CarService
         return $this->repo->delete($id);
     }
     public function search($request)
-{
-    return $this->repo->search($request);
-}
+    {
+        return $this->repo->search($request);
+    }
+
+    public function formatCar($car)
+    {
+        foreach ($car->images as $image) {
+            $image->image_url = Storage::url($image->image_path);
+            unset($image->image_path);
+        }
+
+        if ($car->brand) {
+            $car->brand->image_url = $car->brand->image_path
+                ? Storage::url($car->brand->image_path)
+                : null;
+            unset($car->brand->image_path);
+        }
+
+        return $car;
+    }
+
+    public function formatCars($cars)
+    {
+        return $cars->getCollection()->transform(function ($car) {
+            return $this->formatCar($car);
+        });
+    }
+
+
 }

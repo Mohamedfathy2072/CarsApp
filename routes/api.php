@@ -15,6 +15,8 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 Route::apiResource('cars', CarController::class);
 Route::apiResource('brands', BrandController::class);
+Route::get('/contact-us', [ContactUsController::class, 'index']);
+Route::post('/contact-us', [ContactUsController::class, 'store']);
 
 
 Route::prefix('auth')->group(function () {
@@ -29,8 +31,6 @@ Route::prefix('auth')->group(function () {
         Route::get('/favourites', [FavouriteController::class, 'myFavourites']);
         Route::delete('/favourites/clear', [FavouriteController::class, 'clearFavourites']);
         Route::get('me', [AuthController::class, 'me']);
-        Route::get('/contact-us', [ContactUsController::class, 'index']);
-        Route::post('/contact-us', [ContactUsController::class, 'store']);
 
         Route::post('complete-profile', [AuthController::class, 'updateProfile']);
         Route::post('set-password', [AuthController::class, 'setPassword']);
