@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\BrandController;
 
 use App\Http\Controllers\Api\ContactUsController;
 use App\Http\Controllers\Api\FavouriteController;
+use App\Http\Controllers\Api\SavedSearchController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +34,11 @@ Route::prefix('auth')->group(function () {
 
         Route::post('complete-profile', [AuthController::class, 'updateProfile']);
         Route::post('set-password', [AuthController::class, 'setPassword']);
+
+
+        Route::get('saved-searches', [SavedSearchController::class, 'index']);
+        Route::post('saved-searches', [SavedSearchController::class, 'store']);
+        Route::delete('saved-searches/{id}', [SavedSearchController::class, 'destroy']);
     });
 
 
