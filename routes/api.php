@@ -34,6 +34,7 @@ Route::prefix('auth')->group(function () {
 
         Route::post('complete-profile', [AuthController::class, 'updateProfile']);
         Route::post('set-password', [AuthController::class, 'setPassword']);
+        Route::post('update-password', [AuthController::class, 'updatePassword']);
 
 
         Route::get('saved-searches', [SavedSearchController::class, 'index']);
