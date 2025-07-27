@@ -10,7 +10,9 @@ class CarRepository implements CarRepositoryInterface
 {
     public function all()
     {
+
         return Car::with(['images', 'brand']);
+
     }
 
 
@@ -91,6 +93,9 @@ class CarRepository implements CarRepositoryInterface
 
         if ($request->filled('km_to')) {
             $query->where('km_driven', '<=', $request->km_to);
+        }
+        if ($request->filled('condition')) {
+            $query->where('condition', $request->condition);
         }
 
         // فلترة حسب المقدم

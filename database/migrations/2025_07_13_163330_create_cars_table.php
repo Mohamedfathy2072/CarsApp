@@ -24,7 +24,11 @@ return new class extends Migration
         $table->decimal('down_payment', 10, 2);   // 170000.00
         $table->string('license_validity');       // Silver license to 2027
         $table->string('location');               // Nasr City...
-        $table->timestamps();
+        $table->enum('condition', ['new', 'used'])->default('used');
+        $table->text('fcm_token')->nullable();
+
+
+              $table->timestamps();
     });
     }
 

@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\Api\AreaController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CarController;
 use App\Http\Controllers\Api\BrandController;
 
 use App\Http\Controllers\Api\ContactUsController;
 use App\Http\Controllers\Api\FavouriteController;
+use App\Http\Controllers\Api\FinancingRequestController;
+use App\Http\Controllers\Api\GovernorateController;
 use App\Http\Controllers\Api\SavedSearchController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -13,10 +16,15 @@ use Illuminate\Support\Facades\Route;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+
 Route::apiResource('cars', CarController::class);
 Route::apiResource('brands', BrandController::class);
 Route::get('/contact-us', [ContactUsController::class, 'index']);
 Route::post('/contact-us', [ContactUsController::class, 'store']);
+// المحافظات والمناطق
+Route::get('/governorates', [GovernorateController::class, 'index']);
+Route::get('/areas', [AreaController::class, 'index']);
+Route::post('complete-profile', [AuthController::class, 'completeRegistration']);
 
 
 Route::prefix('auth')->group(function () {
@@ -32,7 +40,6 @@ Route::prefix('auth')->group(function () {
         Route::delete('/favourites/clear', [FavouriteController::class, 'clearFavourites']);
         Route::get('me', [AuthController::class, 'me']);
 
-        Route::post('complete-profile', [AuthController::class, 'updateProfile']);
         Route::post('set-password', [AuthController::class, 'setPassword']);
         Route::post('update-password', [AuthController::class, 'updatePassword']);
 
@@ -40,6 +47,11 @@ Route::prefix('auth')->group(function () {
         Route::get('saved-searches', [SavedSearchController::class, 'index']);
         Route::post('saved-searches', [SavedSearchController::class, 'store']);
         Route::delete('saved-searches/{id}', [SavedSearchController::class, 'destroy']);
+
+
+
+        Route::post('/financing-requests', [FinancingRequestController::class, 'store']);
+
     });
 
 
