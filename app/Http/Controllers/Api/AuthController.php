@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
@@ -208,6 +209,22 @@ class AuthController extends Controller
             'status' => true,
             'message' => 'Password updated successfully.'
         ]);
+    }
+
+
+    public function logout(Request $request)
+    {
+        try {
+            JWTAuth::invalidate(JWTAuth::getToken());
+
+            return response()->json([
+                'message' => 'تم تسجيل الخروج بنجاح.'
+            ]);
+        } catch (JWTException $e) {
+            return response()->json([
+                'error' => 'فشل في تسجيل الخروج. حاول مرة أخرى.'
+            ], 500);
+        }
     }
 
 
