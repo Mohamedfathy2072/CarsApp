@@ -6,10 +6,12 @@ use App\Http\Controllers\Api\CarController;
 use App\Http\Controllers\Api\BrandController;
 
 use App\Http\Controllers\Api\ContactUsController;
+use App\Http\Controllers\Api\FacultyController;
 use App\Http\Controllers\Api\FavouriteController;
 use App\Http\Controllers\Api\FinancingRequestController;
 use App\Http\Controllers\Api\GovernorateController;
 use App\Http\Controllers\Api\SavedSearchController;
+use App\Http\Controllers\Api\UniversityController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +27,8 @@ Route::post('/contact-us', [ContactUsController::class, 'store']);
 Route::get('/governorates', [GovernorateController::class, 'index']);
 Route::get('/areas', [AreaController::class, 'index']);
 Route::post('complete-profile', [AuthController::class, 'completeRegistration']);
+Route::get('universities', [UniversityController::class, 'universitiesOnly']);
+Route::get('faculties', [FacultyController::class, 'index']);
 
 
 Route::prefix('auth')->group(function () {

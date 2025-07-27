@@ -36,6 +36,7 @@ class FinancingRequest extends Model
         'manufacture_year',
         'car_brand',
 
+
         // المستندات الاختيارية
         'club_membership_card',
         'medical_insurance_card',

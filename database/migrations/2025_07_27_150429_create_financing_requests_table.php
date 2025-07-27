@@ -25,8 +25,6 @@ return new class extends Migration
             $table->string('card_front');
             $table->string('card_back');
             $table->enum('applicant_type', ['student', 'employee']);
-            $table->string('university')->nullable();
-            $table->string('faculty')->nullable();
             $table->string('company_name')->nullable();
             $table->string('company_street')->nullable();
             $table->string('company_building')->nullable();

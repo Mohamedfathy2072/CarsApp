@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             GovernorateSeeder::class,
             AreaSeeder::class,
+            UniversitySeeder::class,
+            FacultySeeder::class,
         ]);
 
     }
