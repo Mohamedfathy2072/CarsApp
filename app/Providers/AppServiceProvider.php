@@ -10,6 +10,8 @@ use App\Repositories\Interfaces\SavedSearchInterface;
 use App\Repositories\SavedSearchRepository;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use App\Models\Car;
+use App\Observers\CarObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,5 +34,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Schema::defaultStringLength(191);
+        Car::observe(CarObserver::class);
     }
 }

@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             AreaSeeder::class,
             UniversitySeeder::class,
             FacultySeeder::class,
+            QuizSeeder::class
         ]);
 
     }

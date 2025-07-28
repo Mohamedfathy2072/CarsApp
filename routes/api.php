@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\SavedSearchController;
 use App\Http\Controllers\Api\UniversityController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\QuizController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -30,6 +31,8 @@ Route::post('complete-profile', [AuthController::class, 'completeRegistration'])
 Route::get('universities', [UniversityController::class, 'universitiesOnly']);
 Route::get('faculties', [FacultyController::class, 'index']);
 Route::post('reset-password', [AuthController::class, 'resetPassword']);
+Route::get('quizzes', [QuizController::class, 'index']);
+Route::post('suggest-cars', [QuizController::class, 'suggestCars']);
 
 
 
