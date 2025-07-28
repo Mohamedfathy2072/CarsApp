@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\UniversityController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\QuizController;
+use App\Http\Controllers\Api\NotificationController as ApiNotificationController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -43,6 +44,7 @@ Route::prefix('auth')->group(function () {
 
 
     Route::middleware('auth:api')->group(function () {
+        Route::get('notifications/user', [ApiNotificationController::class, 'getForUser']);
         Route::post('update-profile', [AuthController::class, 'updateProfile']);
         Route::post('/favourites/toggle/{carId}', [FavouriteController::class, 'toggleFavourite']);
         Route::get('/favourites', [FavouriteController::class, 'myFavourites']);
