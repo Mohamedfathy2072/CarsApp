@@ -47,7 +47,7 @@ Route::prefix('auth')->group(function () {
         Route::post('set-password', [AuthController::class, 'setPassword']);
         Route::post('update-password', [AuthController::class, 'updatePassword']);
         Route::post('logout', [AuthController::class, 'logout']);
-
+        Route::delete('delete-account', [AuthController::class, 'deleteAccount']);
 
         Route::get('saved-searches', [SavedSearchController::class, 'index']);
         Route::post('saved-searches', [SavedSearchController::class, 'store']);

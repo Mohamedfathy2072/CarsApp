@@ -135,9 +135,11 @@ class AuthController extends Controller
         $token = JWTAuth::fromUser($user);
 
         return response()->json([
+            'message' => 'تم تسجيل الدخول إلى حسابك بنجاح.',
             'token' => $token,
             'user' => $user
         ]);
+
     }
 
 
@@ -226,6 +228,33 @@ class AuthController extends Controller
             ], 500);
         }
     }
+    public function deleteAccount(Request $request)
+    {
+        try {
+            $user = auth('api')->user();
+
+            if (!$user) {
+                return response()->json([
+                    'error' => 'Unauthorized'
+                ], 401);
+            }
+
+            // حذف المستخدم
+            $user->delete();
+
+            // إبطال التوكن
+            JWTAuth::invalidate(JWTAuth::getToken());
+
+            return response()->json([
+                'message' => 'تم حذف الحساب بنجاح.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'حدث خطأ أثناء حذف الحساب. حاول مرة أخرى.'
+            ], 500);
+        }
+    }
+
 
 
 }
