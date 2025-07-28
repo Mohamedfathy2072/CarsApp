@@ -11,7 +11,7 @@ class Car extends Model
 
     protected $fillable = [
         'brand_id', 'model', 'year', 'color', 'transmission', 'engine_cc',
-        'body_type', 'km_driven', 'price', 'down_payment', 'license_validity', 'location'
+        'body_type', 'km_driven', 'price', 'down_payment', 'license_validity', 'location' , 'condition'
     ];
 
     public function images()

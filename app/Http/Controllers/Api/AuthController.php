@@ -17,6 +17,7 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'phone' => 'required|numeric|digits_between:10,15',
+            'isForgotPass' => 'required|boolean'
         ]);
 
         if ($validator->fails()) {
@@ -25,10 +26,16 @@ class AuthController extends Controller
 
         $existingUser = User::where('phone', $request->phone)->first();
 
-        if ($existingUser && $existingUser->password) {
+        if (!$request->isForgotPass && $existingUser && $existingUser->password) {
             return response()->json([
                 'message' => 'هذا الرقم مسجل بالفعل، الرجاء تسجيل الدخول.'
             ], 409);
+        }
+
+        if ($request->isForgotPass && (!$existingUser || !$existingUser->password)) {
+            return response()->json([
+                'message' => 'لا يوجد حساب مرتبط بهذا الرقم.'
+            ], 404);
         }
 
         $otpCode = rand(1000, 9999);
@@ -40,7 +47,8 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'OTP sent successfully.',
-            'otp_code' => $otpCode
+            'otp_code' => $otpCode,
+            'user_id' => $user->id
         ]);
     }
 
@@ -253,6 +261,23 @@ class AuthController extends Controller
                 'error' => 'حدث خطأ أثناء حذف الحساب. حاول مرة أخرى.'
             ], 500);
         }
+    }
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'password' => 'required|min:6|confirmed',
+        ]);
+        $user = User::find($request->user_id);
+
+        $user->update([
+            'password' => Hash::make($request->password)
+        ]);
+
+
+        return response()->json([
+            'message' => 'تم إعادة تعيين كلمة المرور بنجاح.'
+        ]);
     }
 
 

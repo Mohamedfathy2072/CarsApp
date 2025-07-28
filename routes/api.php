@@ -29,6 +29,8 @@ Route::get('/areas', [AreaController::class, 'index']);
 Route::post('complete-profile', [AuthController::class, 'completeRegistration']);
 Route::get('universities', [UniversityController::class, 'universitiesOnly']);
 Route::get('faculties', [FacultyController::class, 'index']);
+Route::post('reset-password', [AuthController::class, 'resetPassword']);
+
 
 
 Route::prefix('auth')->group(function () {
