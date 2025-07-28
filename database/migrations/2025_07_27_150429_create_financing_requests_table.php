@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('eco_position')->nullable();
             $table->decimal('mid_salary', 10, 2)->nullable();
             $table->enum('car_type', ['new', 'used']);
+            $table->foreignId('brand_id')->constrained()->onDelete('cascade');
             $table->decimal('total_price', 10, 2);
             $table->decimal('down_payment', 10, 2);
             $table->integer('deposit_percentage');

@@ -35,8 +35,8 @@ class StoreFinancingRequest extends FormRequest
             'university_id' => 'required_if:applicant_type,student|exists:universities,id',
             'faculty_id' => 'required_if:applicant_type,student|exists:faculties,id',
             'applicant_type' => 'required|in:student,employee',
-            'university' => 'required_if:applicant_type,student',
-            'faculty' => 'required_if:applicant_type,student',
+            'brand_id' => 'required', 'exists:brands,id',
+
             'company_name' => 'required_if:applicant_type,employee',
             'company_street' => 'required_if:applicant_type,employee',
             'company_building' => 'nullable',

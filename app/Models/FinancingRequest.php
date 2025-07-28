@@ -35,7 +35,7 @@ class FinancingRequest extends Model
         'car_model',
         'manufacture_year',
         'car_brand',
-
+        'brand_id',
 
         // المستندات الاختيارية
         'club_membership_card',
@@ -58,5 +58,9 @@ class FinancingRequest extends Model
     public function area()
     {
         return $this->belongsTo(Area::class);
+    }
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
     }
 }
