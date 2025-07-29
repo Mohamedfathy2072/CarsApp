@@ -20,7 +20,7 @@ class CarController extends BaseController
     {
         $size = $request->input('size', 10);
 
-        if ($request->hasAny(['brand', 'model', 'color', 'year', 'price_from', 'price_to', 'location', 'sort_by', 'sort_order','condition'])) {
+        if ($request->hasAny(['brand', 'model', 'color', 'year', 'price_from', 'price_to', 'location', 'sort_by', 'sort_order','condition' , 'search'])) {
             $query = $this->carService->search($request);
         } else {
             $query = $this->carService->getAllCars();

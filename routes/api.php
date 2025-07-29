@@ -41,6 +41,7 @@ Route::prefix('auth')->group(function () {
     Route::post('send-otp', [AuthController::class, 'sendOtp']);
     Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
     Route::post('login', [AuthController::class, 'login']);
+    Route::post('/update-phone', [AuthController::class, 'updatephone']);
 
 
     Route::middleware('auth:api')->group(function () {
@@ -63,6 +64,8 @@ Route::prefix('auth')->group(function () {
 
 
         Route::post('/financing-requests', [FinancingRequestController::class, 'store']);
+
+
 
     });
 

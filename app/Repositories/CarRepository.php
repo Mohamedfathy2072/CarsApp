@@ -50,6 +50,21 @@ class CarRepository implements CarRepositoryInterface
     {
         $query = Car::query();
 
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+                $q->where('model', 'like', "%$search%")
+                    ->orWhere('color', 'like', "%$search%")
+                    ->orWhere('location', 'like', "%$search%")
+                    ->orWhere('year', 'like', "%$search%")
+                    ->orWhereHas('brand', function ($q2) use ($search) {
+                        $q2->where('name', 'like', "%$search%");
+                    });
+            });
+        }
+
+//dd($query);
         // فلترة حسب البراند
         if ($request->filled('brand')) {
             $query->whereHas('brand', function ($q) use ($request) {
@@ -97,6 +112,11 @@ class CarRepository implements CarRepositoryInterface
         if ($request->filled('condition')) {
             $query->where('condition', $request->condition);
         }
+        if ($request->filled('condition')) {
+            $conditions = is_array($request->condition) ? $request->condition : [$request->condition];
+            $query->whereIn('condition', $conditions);
+        }
+
 
         // فلترة حسب المقدم
         if ($request->filled('down_payment_from')) {

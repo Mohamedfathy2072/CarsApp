@@ -279,7 +279,42 @@ class AuthController extends Controller
             'message' => 'تم إعادة تعيين كلمة المرور بنجاح.'
         ]);
     }
+    public function updatePhone(Request $request)
+    {
+        $user = auth('api')->user();
 
+        $request->validate([
+            'new_phone' => 'required|numeric|digits_between:10,15',
+            'password' => 'required|string',
+        ]);
 
+        // تحقق من الباسورد
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'error' => 'كلمة المرور غير صحيحة.',
+            ], 401);
+        }
+
+        // تحقق إذا كان الرقم مستخدم بالفعل من مستخدم آخر
+        $phoneExists = \App\Models\User::where('phone', $request->new_phone)
+            ->where('id', '!=', $user->id)
+            ->exists();
+
+        if ($phoneExists) {
+            return response()->json([
+                'error' => 'هذا الرقم مستخدم بالفعل، يرجى استخدام رقم آخر.',
+            ], 422);
+        }
+
+        // التحديث
+        $user->update([
+            'phone' => $request->new_phone,
+        ]);
+
+        return response()->json([
+            'message' => 'تم تحديث رقم الهاتف بنجاح.',
+            'new_phone' => $user->phone,
+        ]);
+    }
 
 }
