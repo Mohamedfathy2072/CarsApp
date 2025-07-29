@@ -21,7 +21,6 @@ class User extends Authenticatable implements JWTSubject
      * @var list<string>
      */
     protected $fillable = [
-
         'phone',
         'otp_code',
         'name',
@@ -31,7 +30,8 @@ class User extends Authenticatable implements JWTSubject
         'updated_profile',
         'gender',
         'date_of_birth',
-        'password'
+        'password',
+        'fcm_token',
     ];
 
 

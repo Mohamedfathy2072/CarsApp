@@ -142,6 +142,9 @@ class AuthController extends Controller
 
         $token = JWTAuth::fromUser($user);
 
+        $user->update([
+            'fcm_token' => $request->fcm_token,
+        ]);
         return response()->json([
             'message' => 'تم تسجيل الدخول إلى حسابك بنجاح.',
             'token' => $token,
@@ -159,7 +162,8 @@ class AuthController extends Controller
             'name' => 'required|string',
             'email' => 'nullable|email',
             'gender' => 'nullable|in:male,female',
-            'date_of_birth' => 'nullable|date'
+            'date_of_birth' => 'nullable|date',
+            'fcm_token' => 'nullable|string',
         ]);
 
         $user->update([
@@ -167,7 +171,8 @@ class AuthController extends Controller
             'email' => $request->email,
             'gender' => $request->gender,
             'date_of_birth' => $request->date_of_birth,
-            'updated_profile' => true
+            'updated_profile' => true,
+            'fcm_token' => $request->fcm_token,
         ]);
 
         return response()->json([

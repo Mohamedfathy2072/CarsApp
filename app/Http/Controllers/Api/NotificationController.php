@@ -16,7 +16,6 @@ class NotificationController extends Controller
         return ApiResponse::success(
             NotificationResource::collection(
                 Notification::where('user_id', auth()->id())
-                    ->orWhere('user_type', NotificationTypes::ALL)
                     ->get()
             ),
             'Notifications retrieved successfully'
