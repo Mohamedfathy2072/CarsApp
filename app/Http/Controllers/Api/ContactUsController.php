@@ -25,15 +25,20 @@ class ContactUsController extends BaseController
             'hotline_number'   => 'nullable|string|max:20',
             'branch_number'    => 'nullable|string|max:20',
             'whatsapp_number'  => 'nullable|string|max:20',
+            'facebook_link'    => 'nullable|url',
+            'instagram_link'   => 'nullable|url',
+            'x_link'           => 'nullable|url',
         ]);
 
-        // لو فيه بيانات قديمة امسحها (لو مسموح يكون سجل واحد بس)
         ContactUs::truncate();
 
         $contact = ContactUs::create([
             'hotline_number'   => $request->hotline_number,
             'branch_number'    => $request->branch_number,
             'whatsapp_number'  => $request->whatsapp_number,
+            'facebook_link'    => $request->facebook_link,
+            'instagram_link'   => $request->instagram_link,
+            'x_link'           => $request->x_link,
         ]);
 
         return response()->json([
@@ -41,5 +46,6 @@ class ContactUsController extends BaseController
             'data' => $contact
         ], 201);
     }
+
 
 }

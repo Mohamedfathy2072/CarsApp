@@ -7,7 +7,9 @@ use App\Repositories\BrandRepository;
 
 use App\Repositories\CarRepository;
 use App\Repositories\Interfaces\SavedSearchInterface;
+use App\Repositories\Interfaces\StartAdRepositoryInterface;
 use App\Repositories\SavedSearchRepository;
+use App\Repositories\StartAdRepository;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use App\Models\Car;
@@ -23,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(CarRepositoryInterface::class, CarRepository::class);
         $this->app->bind(BrandRepositoryInterface::class, BrandRepository::class);
         $this->app->bind(SavedSearchInterface::class, SavedSearchRepository::class);
+        $this->app->bind(StartAdRepositoryInterface::class, StartAdRepository::class);
 
 
 

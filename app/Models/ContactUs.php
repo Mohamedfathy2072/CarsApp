@@ -10,5 +10,9 @@ class ContactUs extends Model
         'hotline_number',
         'branch_number',
         'whatsapp_number',
+        'facebook_link',
+        'instagram_link',
+        'x_link',
     ];
+
 }

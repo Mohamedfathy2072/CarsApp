@@ -30,8 +30,10 @@ class CarService
     {
         $data = $request->only([
             'brand_id', 'model', 'year', 'color', 'transmission', 'engine_cc',
-            'body_type', 'km_driven', 'price', 'down_payment', 'license_validity', 'location'
+            'body_type', 'km_driven', 'price', 'down_payment', 'license_validity',
+            'location', 'condition', 'vehicle_category', 'description', 'payment_option'
         ]);
+
 
         $car = $this->repo->create($data);
 
@@ -46,16 +48,19 @@ class CarService
                 ]);
             }
         }
+        $this->repo->attachConditions($car, $request);
 
-         return $car->load(['images', 'brand']);
+        return $car->load(['images', 'brand', 'exteriorConditions', 'interiorConditions', 'mechanicalConditions']);
     }
 
     public function updateCar($id, Request $request)
     {
         $data = $request->only([
             'brand_id', 'model', 'year', 'color', 'transmission', 'engine_cc',
-            'body_type', 'km_driven', 'price', 'down_payment', 'license_validity', 'location'
+            'body_type', 'km_driven', 'price', 'down_payment', 'license_validity',
+            'location', 'condition', 'vehicle_category', 'description', 'payment_option'
         ]);
+
 
         // لو فيه صور جديدة اترفعت في التحديث
         if ($request->hasFile('images')) {
@@ -100,11 +105,13 @@ class CarService
 
     public function formatCar($car)
     {
+        // ✅ روابط صور السيارة
         foreach ($car->images as $image) {
             $image->image_url = Storage::url($image->image_path);
             unset($image->image_path);
         }
 
+        // ✅ رابط صورة البراند
         if ($car->brand) {
             $car->brand->image_url = $car->brand->image_path
                 ? Storage::url($car->brand->image_path)
@@ -112,8 +119,33 @@ class CarService
             unset($car->brand->image_path);
         }
 
+        // ✅ روابط صور الحالات الخارجية
+        foreach ($car->exteriorConditions as $condition) {
+            $condition->image_url = $condition->image_path
+                ? Storage::url($condition->image_path)
+                : null;
+            unset($condition->image_path);
+        }
+
+        // ✅ روابط صور الحالات الداخلية
+        foreach ($car->interiorConditions as $condition) {
+            $condition->image_url = $condition->image_path
+                ? Storage::url($condition->image_path)
+                : null;
+            unset($condition->image_path);
+        }
+
+        // ✅ روابط صور الحالات الميكانيكية
+        foreach ($car->mechanicalConditions as $condition) {
+            $condition->image_url = $condition->image_path
+                ? Storage::url($condition->image_path)
+                : null;
+            unset($condition->image_path);
+        }
+
         return $car;
     }
+
 
     public function formatCars($cars)
     {

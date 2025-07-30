@@ -21,8 +21,15 @@ class CarRepository implements CarRepositoryInterface
 
     public function find($id)
     {
-        return Car::with(['images', 'brand'])->findOrFail($id);
+        return Car::with([
+            'images',
+            'brand',
+            'exteriorConditions',
+            'interiorConditions',
+            'mechanicalConditions'
+        ])->findOrFail($id);
     }
+
 
 
     public function create(array $data)
@@ -147,4 +154,63 @@ class CarRepository implements CarRepositoryInterface
 
 
     //end search
+
+    public function attachConditions($car, $request)
+    {
+        // خارجي
+        if ($request->filled('exterior_conditions')) {
+            foreach ($request->exterior_conditions as $index => $item) {
+                $path = null;
+                if ($request->hasFile("exterior_conditions.$index.image")) {
+                    $file = $request->file("exterior_conditions.$index.image");
+                    $path = $file->store('condition_images', 'public');
+                }
+
+                $car->exteriorConditions()->create([
+                    'part_name' => $item['part_name'],
+                    'note' => $item['note'] ?? null,
+                    'image_path' => $path
+                ]);
+            }
+        }
+
+        // داخلي
+        if ($request->filled('interior_conditions')) {
+            foreach ($request->interior_conditions as $index => $item) {
+                $path = null;
+                if ($request->hasFile("interior_conditions.$index.image")) {
+                    $file = $request->file("interior_conditions.$index.image");
+                    $path = $file->store('condition_images', 'public');
+                }
+
+                $car->interiorConditions()->create([
+                    'part_name' => $item['part_name'],
+                    'note' => $item['note'] ?? null,
+                    'image_path' => $path
+                ]);
+            }
+        }
+
+        // ميكانيكية
+        if ($request->filled('mechanical_conditions')) {
+            foreach ($request->mechanical_conditions as $index => $item) {
+                $path = null;
+                if ($request->hasFile("mechanical_conditions.$index.image")) {
+                    $file = $request->file("mechanical_conditions.$index.image");
+                    $path = $file->store('condition_images', 'public');
+                }
+
+                $car->mechanicalConditions()->create([
+                    'part_name' => $item['part_name'],
+                    'note' => $item['note'] ?? null,
+                    'image_path' => $path
+                ]);
+
+            }
+        }
+
+
+        return $car;
+    }
+
 }

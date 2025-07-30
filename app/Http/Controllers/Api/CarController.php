@@ -55,6 +55,27 @@ class CarController extends BaseController
             'license_validity' => 'required|string',
             'location' => 'required|string',
             'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
+
+
+            'exterior_conditions' => 'array',
+            'exterior_conditions.*.part_name' => 'required|string',
+            'exterior_conditions.*.note' => 'nullable|string',
+            'exterior_conditions.*.image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+
+            'interior_conditions' => 'array',
+            'interior_conditions.*.part_name' => 'required|string',
+            'interior_conditions.*.note' => 'nullable|string',
+            'interior_conditions.*.image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+
+            'mechanical_conditions' => 'array',
+            'mechanical_conditions.*.part_name' => 'required|string',
+            'mechanical_conditions.*.note' => 'nullable|string',
+            'mechanical_conditions.*.image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'vehicle_category' => 'nullable|string',
+            'description' => 'nullable|string',
+            'payment_option' => 'nullable|in:cash,installment',
+
+
         ]);
 
         return response()->json($this->carService->createCar($request), 201);

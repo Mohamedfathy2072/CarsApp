@@ -10,7 +10,9 @@ use App\Http\Controllers\Api\FacultyController;
 use App\Http\Controllers\Api\FavouriteController;
 use App\Http\Controllers\Api\FinancingRequestController;
 use App\Http\Controllers\Api\GovernorateController;
+use App\Http\Controllers\Api\HelpRequestController;
 use App\Http\Controllers\Api\SavedSearchController;
+use App\Http\Controllers\Api\StartAdController;
 use App\Http\Controllers\Api\UniversityController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +36,8 @@ Route::get('faculties', [FacultyController::class, 'index']);
 Route::post('reset-password', [AuthController::class, 'resetPassword']);
 Route::get('quizzes', [QuizController::class, 'index']);
 Route::post('suggest-cars', [QuizController::class, 'suggestCars']);
+Route::post('/start-ad', [StartAdController::class, 'store']);
+Route::get('/start-ad', [StartAdController::class, 'show']);
 
 
 
@@ -60,6 +64,9 @@ Route::prefix('auth')->group(function () {
         Route::get('saved-searches', [SavedSearchController::class, 'index']);
         Route::post('saved-searches', [SavedSearchController::class, 'store']);
         Route::delete('saved-searches/{id}', [SavedSearchController::class, 'destroy']);
+
+
+        Route::post('Help-Request', [HelpRequestController::class, 'store']);
 
 
 
