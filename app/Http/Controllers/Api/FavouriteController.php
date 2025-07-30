@@ -6,9 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Models\Car;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Services\CarService;
 
 class FavouriteController extends BaseController
 {
+    protected $carService;
+
+    public function __construct(CarService $carService)
+    {
+        $this->carService = $carService;
+    }
+
     public function toggleFavourite($carId)
     {
         $user = auth('api')->user();
@@ -31,37 +39,14 @@ class FavouriteController extends BaseController
     {
         $user = auth('api')->user();
 
-        // جلب قيم page و size من request
-        $size = $request->query('size', 10);  // Default = 10 لو مش مبعوتة
-        $page = $request->query('page', 1);   // Laravel بياخدها أوتوماتيك
+        $size = $request->query('size', 10);
 
-        // تنفيذ Pagination بالـ size المبعت
         $favourites = $user->favouriteCars()
-            ->with(['images', 'brand'])
+            ->with(['images', 'brand', 'exteriorConditions', 'interiorConditions', 'mechanicalConditions'])
             ->paginate($size);
 
-        $favourites->getCollection()->transform(function ($car) {
-            $car->images = $car->images->map(function ($image) {
-                return [
-                    'id'         => $image->id,
-                    'car_id'     => $image->car_id,
-                    'is_360'     => $image->is_360,
-                    'created_at' => $image->created_at,
-                    'updated_at' => $image->updated_at,
-                    'image_url'  => Storage::url($image->image_path),
-                ];
-            });
-
-            $car->brand->image_url = $car->brand && $car->brand->image_path
-                ? Storage::url($car->brand->image_path)
-                : null;
-
-            if (isset($car->brand->image_path)) {
-                unset($car->brand->image_path);
-            }
-
-            return $car;
-        });
+        // Format كل سيارة
+        $this->carService->formatCars($favourites);
 
         return $this->successResponse($favourites, 'Favourite cars fetched successfully.');
     }
