@@ -105,6 +105,15 @@ class CarService
 
     public function formatCar($car)
     {
+
+        $user = auth('api')->user();
+
+        // ✅ هل العربية مفضلة للمستخدم؟
+        if ($user) {
+            $car->is_fav = $user->favouriteCars()->where('car_id', $car->id)->exists();
+        } else {
+            $car->is_fav = false;
+        }
         // ✅ روابط صور السيارة
         foreach ($car->images as $image) {
             $image->image_url = Storage::url($image->image_path);
