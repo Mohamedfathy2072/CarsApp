@@ -85,8 +85,12 @@ class QuizController extends Controller
 
         $cars = $query->take(20)->get(); // ممكن تحدد عدد النتائج
 
-        return response()->json([
-            'cars' => $cars
-        ]);
+       return response()->json([
+        'status' => true,
+        'message' => 'Cars fetched successfully.',
+        'data' => [
+            'items' => $cars
+        ]
+    ]);
     }
 }
