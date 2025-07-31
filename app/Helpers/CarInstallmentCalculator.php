@@ -7,7 +7,7 @@ class CarInstallmentCalculator
     private $carPrice;
     private $downPayment;
     private $installmentYears;
-    private $annualInterestRate = 17.5; // 17.5% annual interest
+    private $annualInterestRate = 15.5; // 17.5% annual interest
 
     public function __construct($carPrice, $downPayment, $installmentYears)
     {
