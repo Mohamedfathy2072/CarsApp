@@ -5,18 +5,18 @@ class CarInstallmentCalculator
 {
     protected float $carPrice;
     protected float $downPayment;
-    protected int $installmentYears;
+    protected int $installmentMonths;
     protected float $annualInterestRate;
 
     public function __construct(
         float $carPrice,
         float $downPayment,
-        int $installmentYears,
+        int $installmentMonths,
         float $annualInterestRate = 15
     ) {
         $this->carPrice = $carPrice;
         $this->downPayment = $downPayment;
-        $this->installmentYears = $installmentYears;
+        $this->installmentMonths = $installmentMonths;
         $this->annualInterestRate = $annualInterestRate;
     }
 
@@ -24,22 +24,20 @@ class CarInstallmentCalculator
     {
         $principal = $this->carPrice - $this->downPayment;
 
-        $totalInterestRate = $this->installmentYears * $this->annualInterestRate;
+        $totalInterestRate = ($this->installmentMonths / 12) * $this->annualInterestRate;
 
         $interestAmount = $principal * ($totalInterestRate / 100);
 
         $totalPayable = $principal + $interestAmount;
 
-        $totalMonths = $this->installmentYears * 12;
-
-        $monthlyInstallment = round($totalPayable / $totalMonths, 2);
+        $monthlyInstallment = round($totalPayable / $this->installmentMonths, 2);
 
         return [
             'principal' => $principal,
             'interest_amount' => $interestAmount,
             'total_payable' => $totalPayable,
             'monthly_installment' => $monthlyInstallment,
-            'total_months' => $totalMonths
+            'total_months' => $this->installmentMonths
         ];
     }
 }

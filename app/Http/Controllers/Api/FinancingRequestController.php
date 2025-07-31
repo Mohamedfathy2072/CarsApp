@@ -40,17 +40,15 @@ class FinancingRequestController extends Controller
         $price = $request->input('price', 0);
         $downPayment = $request->input('down_payment', 0);
         $months = $request->input('months', 0);
-        $interestRate = $request->input('interest_rate', 0);
 
-        if ($price <= 0 || $downPayment < 0 || $months <= 0 || $interestRate < 0) {
+        if ($price <= 0 || $downPayment < 0 || $months <= 0) {
             return response()->json(['error' => 'Invalid input values'], 400);
         }
 
         $carInstallmentCalculator = new CarInstallmentCalculator(
             $price,
             $downPayment,
-            $months,
-            $interestRate
+            $months
         );
         $monthlyPayment = $carInstallmentCalculator->calculate();
 
