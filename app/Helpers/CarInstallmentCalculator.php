@@ -7,7 +7,7 @@ class CarInstallmentCalculator
     protected float $carPrice;
     protected float $downPayment;
     protected int $months;
-    protected float $annualInterest = 17.5;
+    protected float $annualInterest = 15.5;
 
     public function __construct(float $carPrice, float $downPayment, int $months)
     {
