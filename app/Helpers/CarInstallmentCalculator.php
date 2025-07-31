@@ -1,43 +1,55 @@
 <?php
 
 namespace App\Helpers;
+
 class CarInstallmentCalculator
 {
-    protected float $carPrice;
-    protected float $downPayment;
-    protected int $installmentMonths;
-    protected float $annualInterestRate;
+    private $carPrice;
+    private $downPayment;
+    private $installmentYears;
+    private $annualInterestRate = 17.5; // 17.5% annual interest
 
-    public function __construct(
-        float $carPrice,
-        float $downPayment,
-        int $installmentMonths,
-        float $annualInterestRate = 15
-    ) {
-        $this->carPrice = $carPrice;
-        $this->downPayment = $downPayment;
-        $this->installmentMonths = $installmentMonths;
-        $this->annualInterestRate = $annualInterestRate;
+    public function __construct($carPrice, $downPayment, $installmentYears)
+    {
+        $this->carPrice = $this->convertToNumber($carPrice);
+        $this->downPayment = $this->convertToNumber($downPayment);
+        $this->installmentYears = $installmentYears;
     }
 
-    public function calculate(): array
+    public function calculate($months)
     {
-        $principal = $this->carPrice - $this->downPayment;
+        $financingAmount = $this->carPrice - $this->downPayment;
 
-        $totalInterestRate = ($this->installmentMonths / 12) * $this->annualInterestRate;
+        // Calculate total interest
+        $totalInterestPercentage = $this->installmentYears * $this->annualInterestRate;
+        $totalInterestAmount = $financingAmount * ($totalInterestPercentage / 100);
 
-        $interestAmount = $principal * ($totalInterestRate / 100);
+        // Total amount to be paid (interest + principal)
+        $totalAmount = $financingAmount + $totalInterestAmount;
 
-        $totalPayable = $principal + $interestAmount;
-
-        $monthlyInstallment = round($totalPayable / $this->installmentMonths, 2);
+        // Monthly installment
+        $monthlyInstallment = $totalAmount / $months;
 
         return [
-            'principal' => $principal,
-            'interest_amount' => $interestAmount,
-            'total_payable' => $totalPayable,
+            'car_price' => $this->carPrice,
+            'down_payment' => $this->downPayment,
+            'financing_amount' => $financingAmount,
+            'installment_years' => $this->installmentYears,
+            'annual_interest_rate' => $this->annualInterestRate,
+            'total_interest_percentage' => $totalInterestPercentage,
+            'total_interest_amount' => $totalInterestAmount,
+            'total_amount' => $totalAmount,
             'monthly_installment' => $monthlyInstallment,
-            'total_months' => $this->installmentMonths
+            'months' => $months
         ];
+    }
+
+    private function convertToNumber($value)
+    {
+        if (is_string($value)) {
+            // Remove commas and any other non-numeric characters (except decimal point)
+            return (float) preg_replace('/[^0-9.]/', '', $value);
+        }
+        return $value;
     }
 }
