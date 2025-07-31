@@ -4,52 +4,37 @@ namespace App\Helpers;
 
 class CarInstallmentCalculator
 {
-    private $carPrice;
-    private $downPayment;
-    private $installmentYears;
-    private $annualInterestRate = 15.5; // 17.5% annual interest
+    protected float $carPrice;
+    protected float $downPayment;
+    protected int $months;
+    protected float $annualInterest = 17.5;
 
-    public function __construct($carPrice, $downPayment, $installmentYears)
+    public function __construct(float $carPrice, float $downPayment, int $months)
     {
-        $this->carPrice = $this->convertToNumber($carPrice);
-        $this->downPayment = $this->convertToNumber($downPayment);
-        $this->installmentYears = $installmentYears;
+        $this->carPrice = $carPrice;
+        $this->downPayment = $downPayment;
+        $this->months = $months;
     }
 
-    public function calculate($months)
+    public function calculate(): array
     {
-        $financingAmount = $this->carPrice - $this->downPayment;
+        $loanAmount = $this->carPrice - $this->downPayment;
+        $years = $this->months / 12;
 
-        // Calculate total interest
-        $totalInterestPercentage = $this->installmentYears * $this->annualInterestRate;
-        $totalInterestAmount = $financingAmount * ($totalInterestPercentage / 100);
+        $interestPercent = $years * $this->annualInterest;
+        $interestAmount = ($loanAmount * $interestPercent) / 100;
 
-        // Total amount to be paid (interest + principal)
-        $totalAmount = $financingAmount + $totalInterestAmount;
-
-        // Monthly installment
-        $monthlyInstallment = $totalAmount / $months;
+        $totalToPay = $loanAmount + $interestAmount;
+        $monthlyInstallment = $totalToPay / $this->months;
 
         return [
             'car_price' => $this->carPrice,
             'down_payment' => $this->downPayment,
-            'financing_amount' => $financingAmount,
-            'installment_years' => $this->installmentYears,
-            'annual_interest_rate' => $this->annualInterestRate,
-            'total_interest_percentage' => $totalInterestPercentage,
-            'total_interest_amount' => $totalInterestAmount,
-            'total_amount' => $totalAmount,
-            'monthly_installment' => $monthlyInstallment,
-            'months' => $months
+            'loan_amount' => $loanAmount,
+            'interest_percent' => $interestPercent,
+            'interest_amount' => $interestAmount,
+            'total_to_pay' => $totalToPay,
+            'monthly_installment' => round($monthlyInstallment, 2),
         ];
-    }
-
-    private function convertToNumber($value)
-    {
-        if (is_string($value)) {
-            // Remove commas and any other non-numeric characters (except decimal point)
-            return (float) preg_replace('/[^0-9.]/', '', $value);
-        }
-        return $value;
     }
 }

@@ -10,19 +10,18 @@ class CarInstallmentController extends BaseController
     public function calculateInstallment(Request $request)
     {
         $request->validate([
-            'car_price' => 'required|numeric',
-            'down_payment' => 'required|numeric',
-            'installment_years' => 'required|integer',
-            'months' => 'required|integer'
+            'car_price' => 'required|numeric|min:1',
+            'down_payment' => 'required|numeric|min:0',
+            'months' => 'required|integer|min:1',
         ]);
 
         $calculator = new CarInstallmentCalculator(
             $request->car_price,
             $request->down_payment,
-            $request->installment_years
+            $request->months
         );
 
-        $result = $calculator->calculate($request->months);
+        $result = $calculator->calculate();
 
         return response()->json($result);
     }
