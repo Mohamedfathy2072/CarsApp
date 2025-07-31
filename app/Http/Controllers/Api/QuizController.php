@@ -8,10 +8,18 @@ use App\Http\Requests\UpdateQuizRequest;
 use App\Models\Brand;
 use App\Models\Car;
 use App\Models\Quiz;
+use App\Services\CarService;
 use Illuminate\Http\Request;
 
-class QuizController extends Controller
+class QuizController extends BaseController
 {
+    protected $carService;
+
+    public function __construct(CarService $carService)
+    {
+        $this->carService = $carService;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -42,6 +50,7 @@ class QuizController extends Controller
     public function suggestCars(Request $request)
     {
         $query = Car::query();
+        $size = $request->input('size', 10);
 
         if ($request->filled('body_type')) {
             $query->where('body_type', $request->body_type);
@@ -83,14 +92,10 @@ class QuizController extends Controller
             $query->where('location', $request->location);
         }
 
-        $cars = $query->take(20)->get(); // ممكن تحدد عدد النتائج
+        $cars = $query->with(['images', 'brand'])->paginate($size);
 
-       return response()->json([
-        'status' => true,
-        'message' => 'Cars fetched successfully.',
-        'data' => [
-            'items' => $cars
-        ]
-    ]);
+        $this->carService->formatCars($cars);
+
+        return $this->successResponse($cars, "Cars fetched successfully.");
     }
 }
