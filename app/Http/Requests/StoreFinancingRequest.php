@@ -32,7 +32,7 @@ class StoreFinancingRequest extends FormRequest
             'floor_number' => 'nullable',
             'card_front' => 'required|image',
             'card_back' => 'required|image',
-            'university_id' => 'required_if:applicant_type,student|exists:universities,id',
+            'university_name' => 'required_if:applicant_type,student',
             'faculty_id' => 'required_if:applicant_type,student|exists:faculties,id',
             'applicant_type' => 'required|in:student,employee',
             'brand_id' => 'required', 'exists:brands,id',
