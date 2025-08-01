@@ -66,26 +66,32 @@ class FinancingRequestController extends Controller
     {
         $user = auth()->user();
 
-        $requests = FinancingRequest::with('brand') // تأكد أن علاقة brand معرفة
-
-        ->where('user_id', $user->id)
+        // Get all requests for this user with brand
+        $requests = FinancingRequest::with('brand')
+            ->where('user_id', $user->id)
             ->latest()
-            ->get()
-            ->map(function ($item) {
-                return [
-                    'id' => $item->id,
-                    'brand' => $item->car_brand,
-                    'brand_img' => $item->brand?->image_path,
-                    'car_model' => $item->car_model,
-                    'year' => $item->manufacture_year,
-                    'price' => $item->total_price,
-                    'status' => $item->status, // نضيف هذا الحقل في الخطوة التالية
-                    'created_at' => $item->created_at->toDateString(),
-                ];
-            });
+            ->get();
+
+        // Count "In process" requests
+        $inProcessCount = $requests->where('status', 'In process')->count();
+
+        // Format the response
+        $formattedRequests = $requests->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'brand' => $item->car_brand,
+                'brand_img' => $item->brand?->image_path,
+                'car_model' => $item->car_model,
+                'year' => $item->manufacture_year,
+                'price' => $item->total_price,
+                'status' => $item->status,
+                'created_at' => $item->created_at->toDateString(),
+            ];
+        });
 
         return response()->json([
-            'data' => $requests
+            'can_apply' => $inProcessCount < 3, // false if 3 or more
+            'data' => $formattedRequests,
         ]);
     }
 
