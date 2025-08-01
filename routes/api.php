@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CarController;
 use App\Http\Controllers\Api\BrandController;
 
+use App\Http\Controllers\Api\CarInstallmentController;
 use App\Http\Controllers\Api\ContactUsController;
 use App\Http\Controllers\Api\FacultyController;
 use App\Http\Controllers\Api\FavouriteController;
@@ -41,7 +42,7 @@ Route::post('/start-ad', [StartAdController::class, 'store']);
 Route::get('/start-ad', [StartAdController::class, 'show']);
 Route::post('Help-Request', [HelpRequestController::class, 'store']);
 
-Route::post('calculate-car-installment', [CarInstallmentCalculator::class, 'calculateInstallment']);
+Route::post('calculate-car-installment', [CarInstallmentController::class, 'calculateInstallment']);
 
 
 Route::prefix('auth')->group(function () {
