@@ -18,7 +18,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\QuizController;
 use App\Http\Controllers\Api\NotificationController as ApiNotificationController;
-use App\Http\Controllers\Api\CarInstallmentController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -39,7 +38,6 @@ Route::get('quizzes', [QuizController::class, 'index']);
 Route::post('suggest-cars', [QuizController::class, 'suggestCars']);
 Route::post('/start-ad', [StartAdController::class, 'store']);
 Route::get('/start-ad', [StartAdController::class, 'show']);
-Route::post('/calculate-car-installment', [CarInstallmentController::class, 'calculateInstallment']);
 
 
 
