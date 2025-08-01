@@ -62,21 +62,27 @@ class FinancingRequestController extends Controller
         ], 201);
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $user = auth()->user();
 
-        // Get all requests for this user with brand
+        // 1. جلب page و size من request أو استخدام قيم افتراضية
+        $page = $request->get('page', 1);
+        $size = $request->get('size', 10);
+
+        // 2. حساب عدد الطلبات "In process" كاملة للمستخدم
+        $inProcessCount = FinancingRequest::where('user_id', $user->id)
+            ->where('status', 'In process')
+            ->count();
+
+        // 3. جلب الطلبات مع العلاقات واستخدام paginate
         $requests = FinancingRequest::with('brand')
             ->where('user_id', $user->id)
             ->latest()
-            ->get();
+            ->paginate($size, ['*'], 'page', $page);
 
-        // Count "In process" requests
-        $inProcessCount = $requests->where('status', 'In process')->count();
-
-        // Format the response
-        $formattedRequests = $requests->map(function ($item) {
+        // 4. تحويل النتائج بالتنسيق المطلوب
+        $formatted = $requests->map(function ($item) {
             return [
                 'id' => $item->id,
                 'brand' => $item->car_brand,
@@ -89,9 +95,19 @@ class FinancingRequestController extends Controller
             ];
         });
 
+        // 5. إعداد pagination metadata
+        $pagination = [
+            'current_page' => $requests->currentPage(),
+            'per_page' => $requests->perPage(),
+            'total' => $requests->total(),
+            'last_page' => $requests->lastPage(),
+        ];
+
+        // 6. الإرجاع النهائي
         return response()->json([
-            'can_apply' => $inProcessCount < 3, // false if 3 or more
-            'data' => $formattedRequests,
+            'can_apply' => $inProcessCount < 3,
+            'data' => $formatted,
+            'pagination' => $pagination,
         ]);
     }
 
