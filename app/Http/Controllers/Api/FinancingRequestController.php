@@ -11,88 +11,81 @@ use Illuminate\Http\Request;
 class FinancingRequestController extends Controller
 {
 
-    public function store(Request $request)
+    public function store(StoreFinancingRequest $request)
     {
         $user = auth()->user();
 
-        // تحقق من عدد الطلبات الجارية
+        // 1. حساب عدد الطلبات "In process" للمستخدم الحالي
         $inProcessCount = FinancingRequest::where('user_id', $user->id)
             ->where('status', 'In process')
             ->count();
 
+        // 2. لو عدد الطلبات >= 3 نرجع can_apply = false
         if ($inProcessCount >= 3) {
             return response()->json([
                 'can_apply' => false,
-                'message' => 'لا يمكنك تقديم طلب جديد حالياً. لديك 3 طلبات جارية.'
-            ], 403); // أو 200 لو عايزها request ناجحة لكن بدون تنفيذ
+                'message' => 'You cannot apply for financing more than 3 times while in process.'
+            ], 200);
         }
 
-        // تحقق من البيانات المطلوبة
-        $data = $request->validate([
-            'car_brand' => 'required|string|max:255',
-            'car_model' => 'required|string|max:255',
-            'manufacture_year' => 'required|numeric',
-            'total_price' => 'required|numeric',
-            // باقي الحقول حسب الحاجة
-        ]);
-
+        // 3. تجهيز البيانات للحفظ
+        $data = $request->validated();
         $data['user_id'] = $user->id;
-        $data['status'] = 'In process'; // الحالة الابتدائية
+        $data['status'] = 'In process'; // نضيف الحالة هنا
 
-        $requestCreated = FinancingRequest::create($data);
+        $data['card_front'] = $request->file('card_front')->store('cards', 'public');
+        $data['card_back'] = $request->file('card_back')->store('cards', 'public');
+
+        if ($request->hasFile('club_membership_card')) {
+            $data['club_membership_card'] = $request->file('club_membership_card')->store('documents', 'public');
+        }
+
+        if ($request->hasFile('medical_insurance_card')) {
+            $data['medical_insurance_card'] = $request->file('medical_insurance_card')->store('documents', 'public');
+        }
+
+        if ($request->hasFile('owned_car_license_front')) {
+            $data['owned_car_license_front'] = $request->file('owned_car_license_front')->store('documents', 'public');
+        }
+
+        if ($request->hasFile('owned_car_license_back')) {
+            $data['owned_car_license_back'] = $request->file('owned_car_license_back')->store('documents', 'public');
+        }
+
+        // 4. إنشاء الطلب
+        $financing = FinancingRequest::create($data);
 
         return response()->json([
             'can_apply' => true,
-            'message' => 'تم إنشاء الطلب بنجاح.',
-            'data' => $requestCreated
+            'data' => $financing,
+            'message' => 'Financing request created successfully.'
         ], 201);
     }
 
-    public function index(Request $request)
+    public function index()
     {
         $user = auth()->user();
 
-        // جلب page و size من الريكوست
-        $size = $request->input('size', 10); // default = 10
-        $requests = FinancingRequest::with('brand')
-            ->where('user_id', $user->id)
+        $requests = FinancingRequest::with('brand') // تأكد أن علاقة brand معرفة
+
+        ->where('user_id', $user->id)
             ->latest()
-            ->paginate($size); // Laravel يعمل pagination تلقائي
-
-        // حساب عدد الطلبات اللي في حالة "In process"
-        $inProcessCount = FinancingRequest::where('user_id', $user->id)
-            ->where('status', 'In process')
-            ->count();
-
-        // هل يقدر يقدم؟
-        $canApply = $inProcessCount < 3;
-
-        // تعديل البيانات المرجعة
-        $formattedData = $requests->getCollection()->transform(function ($item) {
-            return [
-                'id' => $item->id,
-                'brand' => $item->car_brand,
-                'brand_img' => $item->brand?->image_path, // الصورة بالرابط
-                'car_model' => $item->car_model,
-                'year' => $item->manufacture_year,
-                'price' => $item->total_price,
-                'status' => $item->status,
-                'created_at' => $item->created_at->toDateString(),
-            ];
-        });
-
-        // استبدال البيانات داخل الـ paginator
-        $requests->setCollection($formattedData);
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'brand' => $item->car_brand,
+                    'brand_img' => $item->brand?->image_path,
+                    'car_model' => $item->car_model,
+                    'year' => $item->manufacture_year,
+                    'price' => $item->total_price,
+                    'status' => $item->status, // نضيف هذا الحقل في الخطوة التالية
+                    'created_at' => $item->created_at->toDateString(),
+                ];
+            });
 
         return response()->json([
-            'can_apply' => $canApply,
-            'data' => $requests->items(),
-            'pagination' => [
-                'current_page' => $requests->currentPage(),
-                'per_page' => $requests->perPage(),
-                'total' => $requests->total(),
-                'last_page' => $requests->lastPage(),
-            ],
+            'data' => $requests
         ]);
     }
 
