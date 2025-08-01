@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\CarInstallmentCalculator;
 use App\Http\Controllers\Api\AreaController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CarController;
@@ -40,6 +41,7 @@ Route::post('/start-ad', [StartAdController::class, 'store']);
 Route::get('/start-ad', [StartAdController::class, 'show']);
 Route::post('Help-Request', [HelpRequestController::class, 'store']);
 
+Route::post('calculate-car-installment', [CarInstallmentCalculator::class, 'calculateInstallment']);
 
 
 Route::prefix('auth')->group(function () {
