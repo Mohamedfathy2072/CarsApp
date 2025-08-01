@@ -38,6 +38,7 @@ Route::get('quizzes', [QuizController::class, 'index']);
 Route::post('suggest-cars', [QuizController::class, 'suggestCars']);
 Route::post('/start-ad', [StartAdController::class, 'store']);
 Route::get('/start-ad', [StartAdController::class, 'show']);
+Route::post('Help-Request', [HelpRequestController::class, 'store']);
 
 
 
