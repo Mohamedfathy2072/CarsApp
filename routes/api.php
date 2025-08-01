@@ -72,6 +72,8 @@ Route::prefix('auth')->group(function () {
 
 
         Route::post('/financing-requests', [FinancingRequestController::class, 'store']);
+        Route::get('/requests', [FinancingRequestController::class, 'index']);
+        Route::post('/cancel-requests', [FinancingRequestController::class, 'cancel']);
 
 
 

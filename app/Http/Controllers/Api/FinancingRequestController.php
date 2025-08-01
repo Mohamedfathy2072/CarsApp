@@ -34,4 +34,51 @@ class FinancingRequestController extends Controller
         $financing = FinancingRequest::create($data);
         return response()->json($financing, 201);
     }
+
+    public function index()
+    {
+        $user = auth()->user();
+
+        $requests = FinancingRequest::with('brand') // تأكد أن علاقة brand معرفة
+
+        ->where('user_id', $user->id)
+            ->latest()
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'brand' => $item->car_brand,
+                    'brand_img' => $item->brand?->image_path,
+                    'car_model' => $item->car_model,
+                    'year' => $item->manufacture_year,
+                    'price' => $item->total_price,
+                    'status' => $item->status, // نضيف هذا الحقل في الخطوة التالية
+                    'created_at' => $item->created_at->toDateString(),
+                ];
+            });
+
+        return response()->json([
+            'data' => $requests
+        ]);
+    }
+
+    public function cancel(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:financing_requests,id',
+        ]);
+
+        $financing = FinancingRequest::where('id', $request->id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        if ($financing->status !== 'In process') {
+            return response()->json(['message' => 'Cannot cancel this request.'], 403);
+        }
+
+        $financing->update(['status' => 'Cancelled']);
+        return response()->json(['message' => 'Request cancelled successfully.']);
+    }
+
+
 }

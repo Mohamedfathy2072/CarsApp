@@ -23,5 +23,10 @@ class Brand extends Model
     {
         return $this->hasMany(FinancingRequest::class);
     }
+    public function getImagePathAttribute($value)
+    {
+        return $value ? asset('storage/' . $value) : null;
+    }
+
 }
 
