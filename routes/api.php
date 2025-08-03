@@ -3,6 +3,7 @@
 use App\Helpers\CarInstallmentCalculator;
 use App\Http\Controllers\Api\AreaController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\CarController;
 use App\Http\Controllers\Api\BrandController;
 
@@ -16,6 +17,7 @@ use App\Http\Controllers\Api\HelpRequestController;
 use App\Http\Controllers\Api\SavedSearchController;
 use App\Http\Controllers\Api\StartAdController;
 use App\Http\Controllers\Api\UniversityController;
+use App\Http\Controllers\Api\VideoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\QuizController;
@@ -43,6 +45,9 @@ Route::get('/start-ad', [StartAdController::class, 'show']);
 Route::post('Help-Request', [HelpRequestController::class, 'store']);
 
 Route::post('calculate-car-installment', [CarInstallmentController::class, 'calculateInstallment']);
+
+Route::apiResource('banners', BannerController::class);
+Route::apiResource('videos', VideoController::class);
 
 
 Route::prefix('auth')->group(function () {

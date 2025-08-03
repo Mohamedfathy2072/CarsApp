@@ -12,13 +12,11 @@ class CarInstallmentController extends BaseController
         $request->validate([
             'car_price' => 'required|numeric|min:1',
             'down_payment' => 'required|numeric|min:0',
-            'months' => 'required|integer|min:1',
         ]);
 
         $calculator = new CarInstallmentCalculator(
             $request->car_price,
-            $request->down_payment,
-            $request->months
+            $request->down_payment
         );
 
         $result = $calculator->calculate();
