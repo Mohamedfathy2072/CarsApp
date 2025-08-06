@@ -37,6 +37,7 @@ class FinancingRequest extends Model
         'car_brand',
         'brand_id',
         'status',
+        'wallet',
 
         // المستندات الاختيارية
         'club_membership_card',

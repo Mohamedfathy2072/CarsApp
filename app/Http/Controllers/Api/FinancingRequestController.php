@@ -15,12 +15,11 @@ class FinancingRequestController extends Controller
     {
         $user = auth()->user();
 
-        // 1. حساب عدد الطلبات "In process" للمستخدم الحالي
+        // 1. التأكد من عدد الطلبات
         $inProcessCount = FinancingRequest::where('user_id', $user->id)
             ->where('status', 'In process')
             ->count();
 
-        // 2. لو عدد الطلبات >= 3 نرجع can_apply = false
         if ($inProcessCount >= 3) {
             return response()->json([
                 'can_apply' => false,
@@ -28,10 +27,10 @@ class FinancingRequestController extends Controller
             ], 200);
         }
 
-        // 3. تجهيز البيانات للحفظ
+        // 2. تجهيز البيانات
         $data = $request->validated();
         $data['user_id'] = $user->id;
-        $data['status'] = 'In process'; // نضيف الحالة هنا
+        $data['status'] = 'In process';
 
         $data['card_front'] = $request->file('card_front')->store('cards', 'public');
         $data['card_back'] = $request->file('card_back')->store('cards', 'public');
@@ -51,6 +50,15 @@ class FinancingRequestController extends Controller
         if ($request->hasFile('owned_car_license_back')) {
             $data['owned_car_license_back'] = $request->file('owned_car_license_back')->store('documents', 'public');
         }
+
+        // 3. حساب المتبقي وتحديث wallet
+        $carPrice = $request->input('total_price');
+        $downPayment = $request->input('down_payment');
+
+        $remainingAmount = $carPrice - $downPayment;
+
+        $user->wallet = $remainingAmount;
+        $user->save();
 
         // 4. إنشاء الطلب
         $financing = FinancingRequest::create($data);
