@@ -14,6 +14,8 @@ use App\Http\Controllers\Api\FavouriteController;
 use App\Http\Controllers\Api\FinancingRequestController;
 use App\Http\Controllers\Api\GovernorateController;
 use App\Http\Controllers\Api\HelpRequestController;
+use App\Http\Controllers\Api\QuizAnswerController;
+use App\Http\Controllers\Api\QuizMatchController;
 use App\Http\Controllers\Api\SavedSearchController;
 use App\Http\Controllers\Api\StartAdController;
 use App\Http\Controllers\Api\UniversityController;
@@ -48,6 +50,11 @@ Route::post('calculate-car-installment', [CarInstallmentController::class, 'calc
 
 Route::apiResource('banners', BannerController::class);
 Route::apiResource('videos', VideoController::class);
+
+Route::get('/quiz', [QuizController::class, 'index']);
+Route::post('/quiz-answers', [QuizAnswerController::class, 'store']);
+Route::get('/quiz/match', [QuizMatchController::class, 'match']);
+
 
 
 Route::prefix('auth')->group(function () {

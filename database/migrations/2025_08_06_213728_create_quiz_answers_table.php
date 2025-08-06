@@ -11,16 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('quizzes', function (Blueprint $table) {
+        Schema::create('quiz_answers', function (Blueprint $table) {
             $table->id();
-            $table->string('question');
-            $table->string('attribute')->unique();
-            $table->json('options')->nullable(); // optional dynamic values
-            $table->string('type')->default('select');
-            $table->boolean('is_required')->default(true);
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('attribute');
+            $table->string('value');
             $table->timestamps();
         });
-
     }
 
     /**
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('quizzes');
+        Schema::dropIfExists('quiz_answers');
     }
 };

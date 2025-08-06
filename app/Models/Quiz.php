@@ -10,10 +10,11 @@ class Quiz extends Model
     /** @use HasFactory<\Database\Factories\QuizFactory> */
     use HasFactory;
 
-    protected $fillable = ['attribute', 'question', 'options'];
+    protected $fillable = ['question', 'attribute', 'options', 'type', 'is_required'];
 
     protected $casts = [
         'options' => 'array',
+        'is_required' => 'boolean',
     ];
 
 }

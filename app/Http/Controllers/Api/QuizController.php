@@ -23,28 +23,34 @@ class QuizController extends BaseController
     /**
      * Display a listing of the resource.
      */
+//    public function index()
+//    {
+//        $questions = Quiz::all()->map(function ($q) {
+//            if ($q->attribute === 'brand_id') {
+//                $options = Brand::select('id as value', 'name as label')->get();
+//            } else {
+//                $options = collect($q->options)->map(function ($opt) {
+//                    return [
+//                        'value' => $opt,
+//                        'label' => $opt,
+//                    ];
+//                });
+//            }
+//
+//            return [
+//                'attribute' => $q->attribute,
+//                'question' => $q->question,
+//                'options' => $options,
+//            ];
+//        });
+//
+//        return response()->json($questions);
+//    }
+
     public function index()
     {
-        $questions = Quiz::all()->map(function ($q) {
-            if ($q->attribute === 'brand_id') {
-                $options = Brand::select('id as value', 'name as label')->get();
-            } else {
-                $options = collect($q->options)->map(function ($opt) {
-                    return [
-                        'value' => $opt,
-                        'label' => $opt,
-                    ];
-                });
-            }
-
-            return [
-                'attribute' => $q->attribute,
-                'question' => $q->question,
-                'options' => $options,
-            ];
-        });
-
-        return response()->json($questions);
+        $quizzes = Quiz::all();
+        return response()->json($quizzes);
     }
 
     public function suggestCars(Request $request)
