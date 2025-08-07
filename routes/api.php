@@ -90,7 +90,9 @@ Route::prefix('auth')->group(function () {
         Route::get('/requests', [FinancingRequestController::class, 'index']);
         Route::post('/cancel-requests', [FinancingRequestController::class, 'cancel']);
 
-
+        Route::get('/quiz', [QuizController::class, 'index']);
+        Route::post('/quiz-answers', [QuizAnswerController::class, 'store']);
+        Route::get('/quiz/match', [QuizMatchController::class, 'match']);
 
     });
 

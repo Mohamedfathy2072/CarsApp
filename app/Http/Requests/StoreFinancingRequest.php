@@ -36,6 +36,7 @@ class StoreFinancingRequest extends FormRequest
             'faculty_id' => 'required_if:applicant_type,student|exists:faculties,id',
             'applicant_type' => 'required|in:student,employee',
             'brand_id' => 'required', 'exists:brands,id',
+            'installment_plan' => 'required|in:12,36,60', // سنة أو 3 أو 5
 
             'company_name' => 'required_if:applicant_type,employee',
             'company_street' => 'required_if:applicant_type,employee',
