@@ -42,6 +42,12 @@ class Car extends Model
     {
         return $this->hasMany(CarMechanicalCondition::class);
     }
+    protected $appends = ['image_url'];
+
+    public function getImageUrlAttribute(): ?string
+    {
+        return $this->image ? asset('storage/' . $this->image) : null;
+    }
 
 }
 

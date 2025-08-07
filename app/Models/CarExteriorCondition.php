@@ -12,4 +12,11 @@ class CarExteriorCondition extends Model
     {
         return $this->belongsTo(Car::class);
     }
+    protected $appends = ['image_url'];
+
+    public function getImageUrlAttribute()
+    {
+        return $this->image ? asset('storage/' . $this->image) : null;
+    }
+
 }

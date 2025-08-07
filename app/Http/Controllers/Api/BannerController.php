@@ -8,16 +8,32 @@ use Illuminate\Http\Request;
 
 class BannerController extends Controller
 {
+
     public function index()
     {
         $banners = Banner::all();
 
-        $banners->map(function ($banner) {
-            $banner->image_url = $banner->image_url;
-            return $banner;
+        $items = $banners->mapWithKeys(function ($banner) {
+            return [
+                $banner->id => [
+                    'id' => $banner->id,
+                    'title' => $banner->title,
+                    'description' => $banner->description,
+                    'link' => $banner->link,
+                    'image_url' => asset('storage/' . $banner->image),
+                    'created_at' => $banner->created_at,
+                    'updated_at' => $banner->updated_at,
+                ]
+            ];
         });
 
-        return response()->json($banners);
+        return response()->json([
+            'status' => true,
+            'message' => 'Banners fetched successfully.',
+            'data' => [
+                'items' => $items,
+            ]
+        ]);
     }
 
 
