@@ -10,9 +10,31 @@ use Illuminate\Support\Facades\Storage;
 class VideoController extends Controller
 {
     public function index()
-    {
-        return response()->json(Video::all());
-    }
+{
+    $videos = \App\Models\Video::all();
+
+    $items = $videos->mapWithKeys(function ($video) {
+        return [
+            $video->id => [
+                'id' => $video->id,
+                'title' => $video->title,
+                'description' => $video->description,
+                'video_url' => $video->video_url, // أو استخدم asset() لو محتاج URL كامل
+                'created_at' => $video->created_at,
+                'updated_at' => $video->updated_at,
+            ]
+        ];
+    });
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Videos fetched successfully.',
+        'data' => [
+            'items' => $items
+        ]
+    ]);
+}
+
 
     public function store(Request $request)
     {
