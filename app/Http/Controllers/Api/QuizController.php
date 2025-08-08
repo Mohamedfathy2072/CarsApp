@@ -48,10 +48,31 @@ class QuizController extends BaseController
 //    }
 
     public function index()
-    {
-        $quizzes = Quiz::all();
-        return response()->json($quizzes);
-    }
+{
+    $quizzes = Quiz::all();
+
+    $items = $quizzes->mapWithKeys(function ($quiz) {
+        return [
+            $quiz->id => [
+                'id' => $quiz->id,
+                'question' => $quiz->question,
+                'type' => $quiz->type,
+                'options' => $quiz->options, // تأكد إنها casted to array في الـ model
+                'created_at' => $quiz->created_at,
+                'updated_at' => $quiz->updated_at,
+            ]
+        ];
+    });
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Quizzes fetched successfully.',
+        'data' => [
+            'items' => $items,
+        ]
+    ]);
+}
+
 
     public function suggestCars(Request $request)
     {
