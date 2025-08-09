@@ -9,22 +9,23 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('start_ads', function (Blueprint $table) {
+        Schema::create('partners', function (Blueprint $table) {
             $table->id();
-            $table->string('image_path');
-            $table->boolean('is_active')->default(true);
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->string('image'); // store path to image
+            $table->string('link')->nullable();
             $table->timestamps();
         });
     }
-
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('start_ads');
+        Schema::dropIfExists('partners');
     }
 };
