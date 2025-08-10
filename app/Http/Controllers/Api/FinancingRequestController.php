@@ -15,7 +15,6 @@ class FinancingRequestController extends Controller
     {
         $user = auth()->user();
 
-        // 1. التأكد من عدد الطلبات
         $inProcessCount = FinancingRequest::where('user_id', $user->id)
             ->where('status', 'In process')
             ->count();
@@ -27,7 +26,6 @@ class FinancingRequestController extends Controller
             ], 200);
         }
 
-        // 2. تجهيز البيانات
         $data = $request->validated();
         $data['user_id'] = $user->id;
         $data['status'] = 'In process';
@@ -51,16 +49,8 @@ class FinancingRequestController extends Controller
             $data['owned_car_license_back'] = $request->file('owned_car_license_back')->store('documents', 'public');
         }
 
-        // 3. حساب المتبقي وتحديث wallet
-        $carPrice = $request->input('total_price');
-        $downPayment = $request->input('down_payment');
+        // مفيش تحديث للwallet هنا خالص
 
-        $remainingAmount = $carPrice - $downPayment;
-
-        $user->wallet = $remainingAmount;
-        $user->save();
-
-        // 4. إنشاء الطلب
         $financing = FinancingRequest::create($data);
 
         return response()->json([
@@ -88,8 +78,6 @@ class FinancingRequestController extends Controller
             ->where('user_id', $user->id)
             ->latest()
             ->paginate($size, ['*'], 'page', $page);
-
-        // 4. تحويل النتائج بالتنسيق المطلوب
         $formatted = $requests->map(function ($item) {
             return [
                 'id' => $item->id,
@@ -103,7 +91,6 @@ class FinancingRequestController extends Controller
             ];
         });
 
-        // 5. إعداد pagination metadata
         $pagination = [
             'current_page' => $requests->currentPage(),
             'per_page' => $requests->perPage(),

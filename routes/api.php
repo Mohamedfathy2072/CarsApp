@@ -26,9 +26,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\QuizController;
 use App\Http\Controllers\Api\NotificationController as ApiNotificationController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+
 
 Route::apiResource('cars', CarController::class);
 Route::apiResource('brands', BrandController::class);
@@ -58,7 +56,7 @@ Route::apiResource('partners', PartnerController::class);
 
 Route::prefix('auth')->group(function () {
     Route::post('send-otp', [AuthController::class, 'sendOtp']);
-    Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
+    Route::post('verify-otp', [AuthController::class, 'verifytp']);
     Route::post('login', [AuthController::class, 'login']);
     Route::post('/update-phone', [AuthController::class, 'updatephone']);
 
