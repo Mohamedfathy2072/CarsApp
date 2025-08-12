@@ -56,7 +56,7 @@ Route::apiResource('partners', PartnerController::class);
 
 Route::prefix('auth')->group(function () {
     Route::post('send-otp', [AuthController::class, 'sendOtp']);
-    Route::post('verify-otp', [AuthController::class, 'verifytp']);
+    Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
     Route::post('login', [AuthController::class, 'login']);
     Route::post('/update-phone', [AuthController::class, 'updatephone']);
 
