@@ -68,5 +68,6 @@ class VideoController extends Controller
 
         return response()->json(['message' => 'Video deleted successfully']);
     }
+
 }
 
