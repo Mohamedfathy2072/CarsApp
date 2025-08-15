@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رفع فيديو</title>
+</head>
+<body>
+<h1>رفع فيديو</h1>
+<input type="file" id="video" name="video" accept="video/*" required>
+<button onclick="uploadVideo()">رفع الفيديو</button>
+
+<div id="response"></div> <!-- لعرض الاستجابة من الخادم -->
+
+<script>
+    function uploadVideo() {
+        const videoInput = document.getElementById('video');
+        const videoFile = videoInput.files[0]; // الحصول على الملف المختار
+
+        if (!videoFile) {
+            document.getElementById('response').innerText = 'يرجى اختيار فيديو أولاً';
+            return;
+        }
+
+        // إنشاء كائن FormData
+        const formData = new FormData();
+        formData.append('video', videoFile);
+
+        // إرسال البيانات باستخدام fetch
+        fetch('https://test.syriaestate.com/api/videos', {
+            method: 'POST',
+            body: formData, // إرسال FormData
+            headers: {
+                'Accept': 'application/json',
+                // إذا كان لديك توكن تحقق، يمكنك إضافته هنا:
+                // 'Authorization': 'Bearer YOUR_TOKEN'
+            }
+        })
+            .then(response => response.json()) // تحويل الاستجابة إلى JSON
+            .then(data => {
+                if (data.video_path) {
+                    document.getElementById('response').innerText = 'تم رفع الفيديو بنجاح!';
+                } else {
+                    document.getElementById('response').innerText = 'فشل في رفع الفيديو';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('response').innerText = 'حدث خطأ أثناء رفع الفيديو';
+            });
+    }
+</script>
+</body>
+</html>
