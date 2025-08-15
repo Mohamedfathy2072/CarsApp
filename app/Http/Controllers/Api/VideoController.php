@@ -19,7 +19,7 @@ class VideoController extends Controller
                 'id' => $video->id,
                 'title' => $video->title,
                 'description' => $video->description,
-                'video_url' => asset('storage/' . $video->video),
+                'video_url' => $video->video,
                 'created_at' => $video->created_at,
                 'updated_at' => $video->updated_at,
             ]
