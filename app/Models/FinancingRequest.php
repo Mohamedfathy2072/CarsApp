@@ -44,6 +44,7 @@ class FinancingRequest extends Model
         'medical_insurance_card',
         'owned_car_license_front',
         'owned_car_license_back',
+        'reference_phone_number', 'person_relation'
     ];
 
 
