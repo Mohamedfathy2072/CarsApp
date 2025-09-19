@@ -49,6 +49,7 @@ Route::post('calculate-car-installment', [CarInstallmentController::class, 'calc
 
 Route::apiResource('banners', BannerController::class);
 Route::apiResource('videos', VideoController::class);
+Route::get('videos/{id}', [VideoController::class, 'getVideoById']);
 
 
 

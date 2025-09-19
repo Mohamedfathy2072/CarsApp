@@ -68,6 +68,24 @@ class VideoController extends Controller
 
         return response()->json(['message' => 'Video deleted successfully']);
     }
+    public function getVideoById($id)
+    {
+        // البحث عن الفيديو باستخدام المعرف
+        $video = Video::findOrFail($id);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Video fetched successfully.',
+            'data' => [
+                'id' => $video->id,
+                'title' => $video->title,
+                'description' => $video->description,
+                'video_url' => $video->video_url,
+                'created_at' => $video->created_at,
+                'updated_at' => $video->updated_at,
+            ]
+        ]);
+    }
 
 }
 
