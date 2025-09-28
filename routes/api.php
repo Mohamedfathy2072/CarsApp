@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\SavedSearchController;
 use App\Http\Controllers\Api\StartAdController;
 use App\Http\Controllers\Api\UniversityController;
 use App\Http\Controllers\Api\VideoController;
+use App\Http\Controllers\NewsletterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\QuizController;
@@ -32,6 +33,8 @@ Route::apiResource('cars', CarController::class);
 Route::apiResource('brands', BrandController::class);
 Route::get('/contact-us', [ContactUsController::class, 'index']);
 Route::post('/contact-us', [ContactUsController::class, 'store']);
+Route::post('/newsletter', [NewsletterController::class, 'store']);
+
 // المحافظات والمناطق
 Route::get('/governorates', [GovernorateController::class, 'index']);
 Route::get('/areas', [AreaController::class, 'index']);
@@ -49,6 +52,7 @@ Route::post('calculate-car-installment', [CarInstallmentController::class, 'calc
 
 Route::apiResource('banners', BannerController::class);
 Route::apiResource('videos', VideoController::class);
+Route::get('videos/{id}', [VideoController::class, 'getVideoById']);
 
 
 

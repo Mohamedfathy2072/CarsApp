@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Car extends Model
 {
+    protected $appends = ['image_url'];
+
     use HasFactory;
 
     protected $fillable = [
@@ -42,12 +44,17 @@ class Car extends Model
     {
         return $this->hasMany(CarMechanicalCondition::class);
     }
-    protected $appends = ['image_url'];
 
     public function getImageUrlAttribute(): ?string
     {
-        return $this->image ? asset('storage/' . $this->image) : null;
+        $firstImage = $this->images()->first();
+        if ($firstImage && $firstImage->image_path) {
+            return asset('storage/' . $firstImage->image_path);
+        }
+
+        return null;
     }
+
 
 }
 
